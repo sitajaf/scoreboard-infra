@@ -1,0 +1,4 @@
+- name: restart scoreboard service
+  service: name=scoreboard state=restarted
+  become_user: root
+  become: true

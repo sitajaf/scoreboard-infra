@@ -1,0 +1,17 @@
+[Unit]
+Description=Scoreboard
+
+[Service]
+ExecStart=/root/.nvm/versions/node/v8.9.1/bin/node /var/app/scoreboard/bin/www
+WorkingDirectory=/var/app/scoreboard
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=scoreboard
+Environment=NODE_ENV=prod
+Environment=HOST=0.0.0.0
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
+

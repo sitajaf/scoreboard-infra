@@ -1,0 +1,26 @@
+---
+- name: Copy key
+  copy:
+    src="{{ github_key }}"
+    dest=/tmp/git_key
+    mode=0600
+
+- name: Pull latest version
+  git:
+    repo=git@github.com:sitajaf/scoreboard.git
+    accept_hostkey=yes
+    key_file=/tmp/git_key
+    dest="{{ scoreboard_home }}"
+    ssh_opts="-o StrictHostKeyChecking=no"
+
+- name: Install npm packages
+  command: bash -lc "cd {{ scoreboard_home }} && npm install --no-bin-links"
+
+- name: Copy service config file
+  copy:
+    src=scoreboard.service
+    dest=/etc/systemd/system/scoreboard.service
+  notify:
+    - restart scoreboard service
+
+

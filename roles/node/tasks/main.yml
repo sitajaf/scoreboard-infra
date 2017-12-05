@@ -1,0 +1,36 @@
+---
+- name: Install dependencies
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+  become:
+  with_items:
+    - git
+    - curl
+    - build-essential
+    - libssl-dev
+
+- name: Install nvm
+  git: repo=https://github.com/creationix/nvm.git dest=~/.nvm
+
+- name: Source nvm in profiles
+  lineinfile: >
+    dest="{{ item }}"
+    line="source ~/.nvm/nvm.sh"
+    create=yes
+  with_items:
+    - ~/.profile
+    - ~/.bashrc
+
+- name: Add node_modules to PATH
+  lineinfile: >
+    dest="{{ item }}"
+    line="export PATH=./node_modules/.bin:$PATH"
+    create=yes
+  with_items:
+    - ~/.profile
+    - ~/.bashrc
+
+- name: Install {{ node_version }}
+  command: bash -lc "nvm install {{ node_version }} && "
+
+- name: Set default node version to {{ node_version }}
+  shell: bash -lc "nvm alias default {{ node_version }}"
